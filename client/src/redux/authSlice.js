@@ -21,7 +21,7 @@ export const registerUser = createAsyncThunk(
   "auth/registerUser",
   async (credentials, { rejectWithValue }) => {
     try {
-      const { data } = await axios.post(`${BASE_URL}/auth`, credentials);
+      const { data } = await axios.post(`${BASE_URL}/register`, credentials);
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -77,6 +77,9 @@ const authSlice = createSlice({
         }
       })
       .addCase(registerUser.fulfilled, (_, action) => {
+        console.log(action.payload);
+      })
+      .addCase(registerUser.rejected, (_, action) => {
         console.log(action.payload);
       });
   },

@@ -3,6 +3,7 @@ import { Home } from "./pages/home/Home";
 import { useSelector } from "react-redux";
 import { selectIsAuthenticated } from "./redux/authSlice";
 import LoginPage from "./pages/login/LoginPage";
+import RegisterPage from "./pages/register/RegisterPage";
 import UserTable from "./pages/users/Users";
 import CypherTable from "./pages/cyphers/Cyphers";
 
@@ -16,6 +17,7 @@ export const Router = () => {
       <Route path="/" element={<Layout />}>
         <Route index element={<Home />} />
         <Route path="login" element={<LoginPage />} />
+        <Route path="register" element={<RegisterPage />} />
         <Route path="users" element={<UserTable />} />
         <Route path="cyphers" element={<CypherTable />} />
       </Route>
