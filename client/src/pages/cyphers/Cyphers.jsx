@@ -1,13 +1,31 @@
-import React from "react";
-import { useSelector } from "react-redux";
-import { selectUser } from "../../redux/authSlice";
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  selectAllCyphers,
+  selectCypherError,
+  selectCypherStatus,
+} from "../../redux/cypherSlice";
+import { fetchCyphers } from "../../redux/cypherSlice";
 import { Container, Table } from "reactstrap";
 
 const CypherTable = () => {
-  const user = useSelector(selectUser);
+  const dispatch = useDispatch();
+  const cyphers = useSelector(selectAllCyphers);
+  const status = useSelector(selectCypherStatus);
+  const error = useSelector(selectCypherError);
 
-  if (user?.role !== "Admin") {
-    return <h1>Forbidden 403</h1>;
+  useEffect(() => {
+    if (cyphers && cyphers.length === 0) {
+      dispatch(fetchCyphers());
+    }
+  }, [cyphers, dispatch]);
+
+  if (status === "loading") {
+    return <h1>Loading...</h1>;
+  }
+
+  if (error) {
+    return <h1>{error}</h1>;
   }
 
   return (
@@ -22,7 +40,15 @@ const CypherTable = () => {
               <th>Cypher Text</th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            {cyphers.map((cypher) => (
+              <tr key={cypher._id}>
+                <td>{cypher.plainText}</td>
+                <td>{cypher.cypherMethod}</td>
+                <td>{cypher.cypherText}</td>
+              </tr>
+            ))}
+          </tbody>
         </Table>
       </Container>
     </>

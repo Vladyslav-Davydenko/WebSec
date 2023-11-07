@@ -11,6 +11,7 @@ const LoginPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const isAuthenticated = useSelector(selectIsAuthenticated);
+  const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -18,7 +19,7 @@ const LoginPage = () => {
       await dispatch(loginUser({ username, password })).unwrap();
       navigate("/");
     } catch (error) {
-      console.error(error);
+      setError(error);
     }
   };
 
@@ -27,6 +28,10 @@ const LoginPage = () => {
       navigate("/");
     }
   }, [isAuthenticated, navigate]);
+
+  if (error) {
+    return <h1>{error}</h1>;
+  }
 
   return (
     <Container>

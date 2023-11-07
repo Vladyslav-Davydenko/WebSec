@@ -17,6 +17,18 @@ export const loginUser = createAsyncThunk(
   }
 );
 
+export const registerUser = createAsyncThunk(
+  "auth/registerUser",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const { data } = await axios.post(`${BASE_URL}/auth`, credentials);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error.message);
+    }
+  }
+);
+
 const initialState = {
   user: localStorage.getItem("vldavy_user")
     ? JSON.parse(localStorage.getItem("vldavy_user"))
@@ -47,19 +59,26 @@ const authSlice = createSlice({
     },
   },
   extraReducers: (builder) => {
-    builder.addCase(loginUser.fulfilled, (state, action) => {
-      const { accessToken } = action.payload;
-      if (accessToken) {
-        state.accessToken = accessToken;
-        state.isAuthenticated = true;
-        const decoded = jwtDecode(accessToken);
-        if (decoded?.UserInfo) {
-          state.user = decoded.UserInfo;
-          localStorage.setItem("vldavy_user", JSON.stringify(decoded.UserInfo));
+    builder
+      .addCase(loginUser.fulfilled, (state, action) => {
+        const { accessToken } = action.payload;
+        if (accessToken) {
+          state.accessToken = accessToken;
+          state.isAuthenticated = true;
+          const decoded = jwtDecode(accessToken);
+          if (decoded?.UserInfo) {
+            state.user = decoded.UserInfo;
+            localStorage.setItem(
+              "vldavy_user",
+              JSON.stringify(decoded.UserInfo)
+            );
+          }
+          localStorage.setItem("vldavy_authToken", accessToken);
         }
-        localStorage.setItem("vldavy_authToken", accessToken);
-      }
-    });
+      })
+      .addCase(registerUser.fulfilled, (_, action) => {
+        console.log(action.payload);
+      });
   },
 });
 

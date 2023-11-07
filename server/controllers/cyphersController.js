@@ -3,7 +3,7 @@ const User = require("../models/User");
 
 const getAllCyphers = async (req, res) => {
   const cyphers = await Cypher.find()
-    .select("-_id -createdAt -updatedAt -__v")
+    .select(" -createdAt -updatedAt -__v")
     .lean();
 
   if (!cyphers?.length) {

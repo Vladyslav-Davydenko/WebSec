@@ -1,7 +1,5 @@
 import { createEntityAdapter, createSlice } from "@reduxjs/toolkit";
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { useSelector } from "react-redux";
-import { selectAccessToken } from "./authSlice";
 import axios from "axios";
 
 const BASE_URL = "http://localhost:3500";
@@ -29,15 +27,17 @@ httpCommon.interceptors.request.use(
   }
 );
 
-export const fetchUsers = createAsyncThunk("user/fetchUser", async () => {
-  try {
-    const { data } = await httpCommon.get(`${BASE_URL}/users`);
-    console.log(data);
-    return data;
-  } catch (error) {
-    console.error(error.message);
+export const fetchUsers = createAsyncThunk(
+  "user/fetchUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await httpCommon.get(`${BASE_URL}/users`);
+      return data;
+    } catch (error) {
+      return rejectWithValue("Connection to your db is refused");
+    }
   }
-});
+);
 
 export const addUser = createAsyncThunk(
   "user/addUser",
