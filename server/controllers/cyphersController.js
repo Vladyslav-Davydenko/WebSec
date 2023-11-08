@@ -90,21 +90,27 @@ const createNewCypher = async (req, res) => {
 };
 
 const deleteCypher = async (req, res) => {
-  const { id } = req.body;
-
+  const { id } = req.params;
+  console.log(req.body);
   if (!id) {
     return res.status(400).json({ message: "Cypher ID required" });
   }
 
-  const cypher = await Cypher.findById(id).exec();
+  let cypher;
+
+  try {
+    cypher = await Cypher.findById(id).exec();
+  } catch (error) {
+    return res.status(400).json({ message: "Cypher ID Invalid" });
+  }
 
   if (!cypher) {
     return res.status(400).json({ message: "Cypher not found" });
   }
 
-  const result = await cypher.deleteOne();
+  await cypher.deleteOne();
 
-  const reply = `Cypher '${result.cypherText}' with ID ${result._id} deleted`;
+  const reply = `Cypher with ID ${id} deleted`;
 
   res.json(reply);
 };

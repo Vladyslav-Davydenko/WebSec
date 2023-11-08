@@ -45,9 +45,9 @@ const createNewUser = async (req, res) => {
 };
 
 const updateUser = async (req, res) => {
-  const { id, username, roles, password } = req.body;
+  const { id, username, role, password } = req.body;
 
-  if (!id || !username || !Array.isArray(roles) || !roles.length) {
+  if (!id || !username || !role) {
     return res
       .status(400)
       .json({ message: "All fields except password are required" });
@@ -69,7 +69,7 @@ const updateUser = async (req, res) => {
   }
 
   user.username = username;
-  user.roles = roles;
+  user.role = role;
   user.active = active;
 
   if (password) {

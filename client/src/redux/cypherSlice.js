@@ -31,7 +31,7 @@ export const fetchCyphers = createAsyncThunk(
   "cypher/fetchCypher",
   async (_, { rejectWithValue }) => {
     try {
-      const { data } = await httpCommon.get(`${BASE_URL}/cyphers`);
+      const { data } = await httpCommon.get(`/cyphers`);
       return data;
     } catch (error) {
       return rejectWithValue("Connection to your db is refused");
@@ -43,25 +43,7 @@ export const addCypher = createAsyncThunk(
   "cypher/addCypher",
   async (createdCypher, { rejectWithValue }) => {
     try {
-      const { data } = await httpCommon.post(
-        `${BASE_URL}/cyphers`,
-        createdCypher
-      );
-      return data;
-    } catch (error) {
-      return rejectWithValue(error.message);
-    }
-  }
-);
-
-export const updateCypher = createAsyncThunk(
-  "cypher/updateCypher",
-  async (updatedCypher, { rejectWithValue }) => {
-    try {
-      const { data } = await httpCommon.patch(
-        `${BASE_URL}/cyphers`,
-        updatedCypher
-      );
+      const { data } = await httpCommon.post(`/cyphers`, createdCypher);
       return data;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -73,7 +55,7 @@ export const deleteCypher = createAsyncThunk(
   "cypher/deleteCypher",
   async (id, { rejectWithValue }) => {
     try {
-      const responce = await httpCommon.delete(`${BASE_URL}/cyphers`, id);
+      const responce = await httpCommon.delete(`/cyphers/${id}`);
       if (responce?.status === 200) return id;
     } catch (error) {
       return rejectWithValue(error.message);
@@ -114,12 +96,9 @@ const cypherSlice = createSlice({
       .addCase(fetchCyphers.pending, handleRequest)
       .addCase(deleteCypher.pending, handleRequest)
       .addCase(addCypher.pending, handleRequest)
-      .addCase(updateCypher.rejected, handleFailure)
+      .addCase(deleteCypher.rejected, handleFailure)
       .addCase(fetchCyphers.rejected, handleFailure)
       .addCase(addCypher.rejected, handleFailure)
-      .addCase(updateCypher.fulfilled, (state, action) =>
-        handleSuccess(state, action, cyphersAdapter.upsertOne)
-      )
       .addCase(fetchCyphers.fulfilled, (state, action) =>
         handleSuccess(state, action, cyphersAdapter.upsertMany)
       )

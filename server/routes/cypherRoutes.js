@@ -8,8 +8,11 @@ router.use(verifyJWT);
 
 router
   .route("/")
-  .get(verifyRoles("Admin"), cyphersController.getAllCyphers)
-  .post(verifyRoles("Admin"), cyphersController.createNewCypher)
+  .get(cyphersController.getAllCyphers)
+  .post(cyphersController.createNewCypher);
+
+router
+  .route("/:id")
   .delete(verifyRoles("Admin"), cyphersController.deleteCypher);
 
 module.exports = router;

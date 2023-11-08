@@ -5,6 +5,7 @@ import {
   selectUserError,
   selectUserStatus,
 } from "../../redux/userSlice";
+import useAuth from "../../hooks/useAuth";
 import { fetchUsers } from "../../redux/userSlice";
 import { Container, Table } from "reactstrap";
 
@@ -12,6 +13,7 @@ const UserTable = () => {
   const dispatch = useDispatch();
   const users = useSelector(selectAllUsers);
   const status = useSelector(selectUserStatus);
+  const { isAdmin } = useAuth();
   const error = useSelector(selectUserError);
 
   useEffect(() => {
@@ -36,14 +38,14 @@ const UserTable = () => {
           <thead>
             <tr>
               <th>Username</th>
-              <th>Roles</th>
+              {isAdmin && <th>Roles</th>}
             </tr>
           </thead>
           <tbody>
             {users.map((user) => (
               <tr key={user._id}>
                 <td>{user.username}</td>
-                <td>{user.role}</td>
+                {isAdmin && <td>{user.role}</td>}
               </tr>
             ))}
           </tbody>
